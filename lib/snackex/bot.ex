@@ -23,24 +23,17 @@ defmodule Snackex.Bot do
   def handle({:command, "see", %{chat: %{id: chat_id, type: "group"}, from: %{first_name: first_name, id: user_id}}}, _name, _extra) do
     username = first_name
     case Snackex.Storage.get(chat_id, user_id) do
-      {_, snack} ->
-        answer("#{username}, you have ordered #{snack.name}.")
-      nil ->
+      [] ->
         answer("#{username}, you have not ordered anything yet!")
+      tickets ->
+        answer(show_tickets(tickets))
     end
   end
 
   def handle({:command, "ticket", %{chat: %{id: chat_id, type: "group"}}}, _name, _extra) do
     Logger.info("Generating ticket for room #{chat_id}!")
 
-    orders = Enum.map(Snackex.Storage.get_all(chat_id), fn {user, snack} ->
-      "#{user.username} has ordered #{snack.name}"
-    end)
-  
-    tickets = Enum.reduce(orders, fn x, acc -> 
-      x <> "\n" <> acc
-    end)
-
+    tickets = show_tickets(Snackex.Storage.get_all(chat_id))
     answer(tickets)
   end
 
@@ -52,5 +45,15 @@ defmodule Snackex.Bot do
       _ ->
         answer("Something went wrong!")
     end
+  end
+
+  defp show_tickets(tickets) do
+    orders = Enum.map(tickets, fn {user, snack} ->
+      "#{user.username} has ordered #{snack.name}"
+    end)
+  
+    Enum.reduce(orders, fn x, acc -> 
+      x <> "\n" <> acc
+    end)
   end
 end

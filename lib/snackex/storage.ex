@@ -35,8 +35,8 @@ defmodule Snackex.Storage do
   end
 
   def get(group, user_id) do
-    Agent.get(__MODULE__, fn elems -> 
-      Enum.find(Map.get(elems, group, []), fn {user, _} ->
+    Agent.get(__MODULE__, fn elems ->
+      Enum.filter(Map.get(elems, group, []), fn {user, _} ->
         user.user_id == user_id
       end)
     end)
