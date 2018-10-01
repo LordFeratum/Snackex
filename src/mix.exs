@@ -23,6 +23,7 @@ defmodule Snackex.MixProject do
   defp deps do
     [
       {:telex, git: "https://github.com/rockneurotiko/telex.git", tag: "0.4.0"},
+      {:distillery, "~> 2.0"},
     ]
   end
 end

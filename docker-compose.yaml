@@ -1,0 +1,6 @@
+version: "3.5"
+
+services:
+  snackex:
+    build: .
+    env_file: .env

@@ -2,7 +2,7 @@
 # and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
 
-config :snackex, token: "586450529:AAF7ihGzglWGgRkXCpRPsaBbW90ho4UjmTg"
+config :snackex, token: "${BOT_TOKEN}"
 
 # This configuration is loaded before any dependency and is restricted
 # to this project. If another project depends on this project, this
