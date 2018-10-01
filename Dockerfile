@@ -5,8 +5,7 @@ RUN apk add --update build-base
 RUN mkdir /opt/build
 RUN mkdir -p /opt/build/rel/artifacts
 
-ENV MIX_ENV prod
-ENV RELX_REPLACE_OS_VARS true
+ENV MIX_ENV=prod
 ARG VERSION=0.1.0
 
 COPY src/ /opt/build
@@ -31,8 +30,12 @@ FROM alpine:3.8
 
 RUN apk add --update bash openssl-dev
 
+ENV REPLACE_OS_VARS=true
+
 WORKDIR /opt/app
 
 COPY --from=builder /opt/build .
 
-CMD trap 'exit' INT; /opt/app/rel/artifacts/bin/snackex foreground
+RUN cat rel/config.exs
+
+CMD trap 'exit' INT; /opt/app/rel/artifacts/bin/snackex start
