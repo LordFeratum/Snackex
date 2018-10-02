@@ -33,6 +33,5 @@ RUN apk add --update bash openssl-dev
 
 WORKDIR /opt/app
 COPY --from=builder /opt/build .
-RUN cat rel/config.exs
 
-CMD trap 'exit' INT; /opt/app/rel/artifacts/bin/snackex start
+CMD trap 'exit' INT; /opt/app/rel/artifacts/bin/snackex foreground
