@@ -7,7 +7,7 @@ defmodule Snackex.Bot do
 
   require Logger
 
-  def handle({:command, "order", %{chat: %{id: chat_id, type: "group"}, text: text, from: %{first_name: first_name, id: user_id}}}, _name, _extra) do
+  def handle({:command, "order", %{chat: %{id: chat_id}, text: text, from: %{first_name: first_name, id: user_id}}}, _name, _extra) do
     username = first_name
     Logger.info("#{username} (#{user_id}) has ordered '#{text}'")
     user = %Snackex.User{username: username, user_id: user_id}
@@ -20,7 +20,7 @@ defmodule Snackex.Bot do
     end
   end
 
-  def handle({:command, "see", %{chat: %{id: chat_id, type: "group"}, from: %{first_name: first_name, id: user_id}}}, _name, _extra) do
+  def handle({:command, "see", %{chat: %{id: chat_id}, from: %{first_name: first_name, id: user_id}}}, _name, _extra) do
     username = first_name
     case Snackex.Storage.get(chat_id, user_id) do
       [] ->
@@ -30,14 +30,14 @@ defmodule Snackex.Bot do
     end
   end
 
-  def handle({:command, "ticket", %{chat: %{id: chat_id, type: "group"}}}, _name, _extra) do
+  def handle({:command, "ticket", %{chat: %{id: chat_id}}}, _name, _extra) do
     Logger.info("Generating ticket for room #{chat_id}!")
 
     tickets = show_tickets(Snackex.Storage.get_all(chat_id))
     answer(tickets)
   end
 
-  def handle({:command, "clean", %{chat: %{id: chat_id, type: "group"}}}, _name, _extra) do
+  def handle({:command, "clean", %{chat: %{id: chat_id}}}, _name, _extra) do
     Logger.info("Cleaning orders for room #{chat_id}!")
     case Snackex.Storage.clean(chat_id) do
       :ok ->
@@ -47,9 +47,14 @@ defmodule Snackex.Bot do
     end
   end
 
+  def handle({:command, _cmd, data}, _name, _extra) do
+    Logger.info("No handle defined! --> #{data}")
+    answer("Sorry, I can't understand you.")
+  end
+
   defp show_tickets(tickets) do
     orders = Enum.map(tickets, fn {user, snack} ->
-      "#{user.username} has ordered #{snack.name}"
+      "#{user.username} --> #{snack.name}"
     end)
   
     Enum.reduce(orders, fn x, acc -> 
