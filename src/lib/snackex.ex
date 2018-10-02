@@ -19,7 +19,6 @@ defmodule Snackex do
     case Supervisor.start_link(children, opts) do
       {:ok, _} = ok ->
         Logger.info("Starting Snackex")
-        Logger.info('TOKEN: ${BOT_TOKEN}')
         ok
 
       error ->

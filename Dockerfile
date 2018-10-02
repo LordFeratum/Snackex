@@ -28,14 +28,11 @@ RUN cp "_build/prod/rel/snackex/releases/$VERSION/snackex.tar.gz" "rel/artifacts
 
 FROM alpine:3.8
 
+ENV REPLACE_OS_VARS=true
 RUN apk add --update bash openssl-dev
 
-ENV REPLACE_OS_VARS=true
-
 WORKDIR /opt/app
-
 COPY --from=builder /opt/build .
-
 RUN cat rel/config.exs
 
 CMD trap 'exit' INT; /opt/app/rel/artifacts/bin/snackex start

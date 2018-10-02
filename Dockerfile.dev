@@ -1,0 +1,11 @@
+FROM bitwalker/alpine-elixir:1.7
+
+RUN apk add --update build-base
+
+COPY src/ /app
+
+WORKDIR /app
+
+RUN mix deps.get
+
+CMD mix run --no-halt
